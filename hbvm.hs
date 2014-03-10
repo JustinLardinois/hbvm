@@ -18,4 +18,20 @@
 -- limitations under the License.
 ---------------------------------------------------------------------------
 
-main = putStrLn "Hello, World!"
+import qualified System.Environment
+import qualified System.Exit
+import qualified System.IO
+
+main = do
+	args <- System.Environment.getArgs
+	if (length args) /= 1
+		then usage
+		else return ()
+	let binary = args !! 0
+	putStrLn binary
+	System.Exit.exitSuccess
+
+usage = do
+	programName <- System.Environment.getProgName
+	System.IO.hPutStrLn System.IO.stderr ("Usage: " ++ programName ++ " BINARY")
+	System.Exit.exitFailure
