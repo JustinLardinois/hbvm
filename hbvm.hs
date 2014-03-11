@@ -18,6 +18,7 @@
 -- limitations under the License.
 ---------------------------------------------------------------------------
 
+import qualified Data.ByteString
 import qualified System.Environment
 import qualified System.Exit
 import qualified System.IO
@@ -28,7 +29,9 @@ main = do
 		then usage
 		else return ()
 	let binary = args !! 0
-	putStrLn binary
+	program <- Data.ByteString.readFile binary
+	Data.ByteString.putStr program
+	putStrLn ""
 	System.Exit.exitSuccess
 
 usage = do

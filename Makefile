@@ -18,17 +18,18 @@
 # limitations under the License.
 ##########################################################################
 
+PACKAGES = bytestring
 RM = del
 
 all: hbvm.exe
 
 clean:
-	${RM} *.o
-	${RM} *.hi
+	${RM} hbvm.o
+	${RM} hbvm.hi
 	${RM} hbvm.exe
 
 hbvm.exe: hbvm.o
-	ghc -o $@ $^
+	ghc -o $@ $^ -package bytestring
 
 hbvm.o: hbvm.hs
 	ghc -c $< -o $@
