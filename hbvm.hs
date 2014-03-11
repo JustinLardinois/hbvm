@@ -18,7 +18,9 @@
 -- limitations under the License.
 ---------------------------------------------------------------------------
 
+import Data.Bits ((.&.) , shift)
 import qualified Data.ByteString
+import qualified Data.Word
 import qualified System.Environment
 import qualified System.Exit
 import qualified System.IO
@@ -32,9 +34,41 @@ main = do
 	program <- Data.ByteString.readFile binary
 	Data.ByteString.putStr program
 	putStrLn ""
+	printList (splitWords program)
 	System.Exit.exitSuccess
 
 usage = do
 	programName <- System.Environment.getProgName
 	System.IO.hPutStrLn System.IO.stderr ("Usage: " ++ programName ++ " BINARY")
 	System.Exit.exitFailure
+
+-------------------------------------------------------------------------------
+-- the next few few functions are dedicated to converting the ByteString into a list of nibbles
+
+-- converts the bytestring of program data into a list of nibbles
+splitWords :: Data.ByteString.ByteString -> [Int]
+splitWords s = foldl (\acc x -> acc ++ (breakWord x)) [] (Data.ByteString.unpack s)
+
+word8ToInt :: Data.Word.Word8 -> Int
+word8ToInt x = (fromIntegral x) :: Int
+
+-- converts a Word8 into a list of two Ints
+breakWord :: Data.Word.Word8 -> [Int]
+breakWord x = [word8ToInt (highNibble x) , word8ToInt (lowNibble x)]
+
+highNibble :: Data.Word.Word8 -> Data.Word.Word8
+highNibble x = (shift x (-4)) .&. mask
+
+lowNibble :: Data.Word.Word8 -> Data.Word.Word8
+lowNibble x = x .&. mask
+
+mask :: Data.Word.Word8
+mask = 0x0F
+
+-------------------------------------------------------------------------------
+
+printList :: [Int] -> IO ()
+printList (x:xs)	= do
+	putStrLn (show x)
+	printList xs
+printList []		= return ()
