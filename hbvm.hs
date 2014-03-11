@@ -25,6 +25,14 @@ import qualified System.Environment
 import qualified System.Exit
 import qualified System.IO
 
+type ProgramCounter	= Int
+type ProgramData	= [Int]
+type Stack			= [Int]
+type State			= (ProgramCounter, ProgramData, Stack)
+
+data DeviceIO		= None | Get | Put
+
+
 main = do
 	args <- System.Environment.getArgs
 	if (length args) /= 1
@@ -41,6 +49,12 @@ usage = do
 	programName <- System.Environment.getProgName
 	System.IO.hPutStrLn System.IO.stderr ("Usage: " ++ programName ++ " BINARY")
 	System.Exit.exitFailure
+
+printList :: [Int] -> IO ()
+printList (x:xs)	= do
+	putStrLn (show x)
+	printList xs
+printList []		= return ()
 
 -------------------------------------------------------------------------------
 -- the next few few functions are dedicated to converting the ByteString into a list of nibbles
@@ -66,9 +80,3 @@ mask :: Data.Word.Word8
 mask = 0x0F
 
 -------------------------------------------------------------------------------
-
-printList :: [Int] -> IO ()
-printList (x:xs)	= do
-	putStrLn (show x)
-	printList xs
-printList []		= return ()
