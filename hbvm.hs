@@ -45,6 +45,8 @@ main = do
 	putStrLn ""
 	let programData = splitWords program
 	printList (splitWords program)
+	putStrLn ""
+	cpu (0,programData,[])
 	System.Exit.exitSuccess
 
 usage = do
@@ -89,7 +91,7 @@ cpu x = do
 	cpu x'
 
 execute :: State -> (State, DeviceIO)
-execute (pc,p,s) = (op_lookup pc) (pc,p,s)
+execute (pc,p,s) = (op_lookup (p !! pc)) (pc,p,s)
 
 interface :: (State, DeviceIO) -> IO State
 interface ((pc,p,s)     , None) = return (pc,p,s)
@@ -97,8 +99,9 @@ interface ((pc,p,s)     , Get ) = do
 	c <- getChar
 	let n = (Data.Char.ord c) .&. byteMask
 	return (pc,p,(n:s))
-interface ((pc,p,(x:s)), Put ) = do
+interface ((pc,p,(x:s)) , Put ) = do
 	putChar (Data.Char.chr (x .&. byteMask))
+	System.IO.hFlush System.IO.stdout
 	return (pc,p,s)
 
 byteMask :: Int
