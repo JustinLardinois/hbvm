@@ -17,6 +17,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
+hbvm (Haskell BASIL Virtual Machine) is a BASIL 2.0.0 compliant virtual
+machine.
 
 Build with gmake. Users of UNIX-like systems will have to change the variable
 RM in makefile to rm, rather than the default del. Windows users should install
