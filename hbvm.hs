@@ -41,11 +41,7 @@ main = do
 		else return ()
 	let binary = args !! 0
 	program <- Data.ByteString.readFile binary
-	Data.ByteString.putStr program
-	putStrLn ""
 	let programData = splitWords program
-	printList (splitWords program)
-	putStrLn ""
 	cpu (0,programData,[])
 	System.Exit.exitSuccess
 
@@ -53,12 +49,6 @@ usage = do
 	programName <- System.Environment.getProgName
 	System.IO.hPutStrLn System.IO.stderr ("Usage: " ++ programName ++ " BINARY")
 	System.Exit.exitFailure
-
-printList :: [Int] -> IO ()
-printList (x:xs)	= do
-	putStrLn (show x)
-	printList xs
-printList []		= return ()
 
 -------------------------------------------------------------------------------
 -- the next few few functions are dedicated to converting the ByteString into a list of nibbles
@@ -84,6 +74,7 @@ nibbleMask :: Data.Word.Word8
 nibbleMask = 0x0F
 
 -------------------------------------------------------------------------------
+-- these functions execute the user program
 
 cpu :: State -> IO ()
 cpu x = do
